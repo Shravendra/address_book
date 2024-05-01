@@ -46,10 +46,10 @@ This is a simple FastAPI application for managing addresses. It allows you to ad
 
 ## API Endpoints 
 
-# POST /addresses/: Add a new address.
-# GET /addresses/: Retrieve addresses within a specified distance from a given latitude and longitude.
-# PUT /addresses/{address_id}: Update an existing address.
-# DELETE /addresses/{address_id}: Delete an existing address.
+   POST /addresses/: Add a new address.
+   GET /addresses/: Retrieve addresses within a specified distance from a given latitude and longitude.
+   PUT /addresses/{address_id}: Update an existing address.
+   DELETE /addresses/{address_id}: Delete an existing address.
 
 
 
