@@ -37,7 +37,7 @@ def create_address_table():
     finally:
         conn.close()
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+@retry(stop=stop_after_attempt(20), wait=wait_exponential(multiplier=1, min=10, max=25))
 def geocode_address(address: str):
     return geolocator.geocode(address)
 
@@ -56,6 +56,39 @@ def add_address(address: Address):
         conn.commit()
     except sqlite3.Error as e:
         logger.error(f"Error adding address to database: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+    finally:
+        if conn:
+            conn.close()
+
+def update_address(address_id: int, updated_address: Address):
+    conn = None
+    try:
+        conn = sqlite3.connect('address_book.db')
+        c = conn.cursor()
+        c.execute('''UPDATE addresses 
+                     SET street=?, city=?, state=?, country=?, latitude=?, longitude=?
+                     WHERE id=?''',
+                     (updated_address.street, updated_address.city, updated_address.state,
+                      updated_address.country, updated_address.latitude, updated_address.longitude,
+                      address_id))
+        conn.commit()
+    except sqlite3.Error as e:
+        logger.error(f"Error updating address in database: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+    finally:
+        if conn:
+            conn.close()
+
+def delete_address(address_id: int):
+    conn = None
+    try:
+        conn = sqlite3.connect('address_book.db')
+        c = conn.cursor()
+        c.execute('''DELETE FROM addresses WHERE id=?''', (address_id,))
+        conn.commit()
+    except sqlite3.Error as e:
+        logger.error(f"Error deleting address from database: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
     finally:
         if conn:
@@ -94,3 +127,14 @@ async def get_addresses(latitude: float, longitude: float, distance: float):
     if not addresses:
         raise HTTPException(status_code=404, detail="No addresses found within the given distance")
     return addresses
+
+
+@app.put("/addresses/{address_id}")
+async def update_address(address_id: int, updated_address: Address):
+    update_address(address_id, updated_address)
+    return {"message": f"Address with ID {address_id} updated successfully"}
+
+@app.delete("/addresses/{address_id}")
+async def delete_address(address_id: int):
+    delete_address(address_id)
+    return {"message": f"Address with ID {address_id} deleted successfully"}
