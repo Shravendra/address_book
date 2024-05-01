@@ -55,9 +55,9 @@ DELETE /addresses/{address_id}: Delete an existing address.
 
 ## Steps to Perform CRUD Operations
 
-#  Create Address:
+# 1. Create Address:
    
-1. Send a POST request to /addresses/ endpoint with the following JSON data:
+ Send a POST request to /addresses/ endpoint with the following JSON data:
 
    Example: http://localhost:8000/addresses/
 
@@ -71,7 +71,7 @@ DELETE /addresses/{address_id}: Delete an existing address.
 }
 
 
-2. Retrieve Addresses:
+## 2. Retrieve Addresses:
 
    Send a GET request to /addresses/ endpoint with query parameters for latitude, longitude, and distance.
 
@@ -81,7 +81,7 @@ DELETE /addresses/{address_id}: Delete an existing address.
 
 
 
-3. Update Address:
+## 3. Update Address:
 
 Send a PUT request to /addresses/{address_id} endpoint with the address ID and the updated address details.
 
@@ -92,7 +92,7 @@ Provide the updated address data in the request body.
 This will update the address with the specified ID.
 
 
-4. Delete Address:
+## 4. Delete Address:
    
 Send a DELETE request to /addresses/{address_id} endpoint with the address ID to delete.
 
